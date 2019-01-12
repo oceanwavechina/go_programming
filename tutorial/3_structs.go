@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 // USIXTEENBITMAX must have comment
 const USIXTEENBITMAX float64 = 65535
 
@@ -31,17 +29,17 @@ func (c *Car) NewTopSpeed(newSpeed float64) {
 	c.topSpeedKMH = newSpeed
 }
 
-func main() {
-	ACar := Car{gasPedal: 65000,
-		brakePadel:    0,
-		steeringWhell: 1234,
-		topSpeedKMH:   231.9}
+// func main() {
+// 	ACar := Car{gasPedal: 65000,
+// 		brakePadel:    0,
+// 		steeringWhell: 1234,
+// 		topSpeedKMH:   231.9}
 
-	fmt.Println("ACar's gasPedal:", ACar.gasPedal)
-	fmt.Println("ACar's Kmh:", ACar.Kmh())
-	fmt.Println("ACar's mmh:", ACar.Mmh())
+// 	fmt.Println("ACar's gasPedal:", ACar.gasPedal)
+// 	fmt.Println("ACar's Kmh:", ACar.Kmh())
+// 	fmt.Println("ACar's mmh:", ACar.Mmh())
 
-	ACar.NewTopSpeed(500)
-	fmt.Println("ACar's Kmh:", ACar.Kmh())
-	fmt.Println("ACar's mmh:", ACar.Mmh())
-}
+// 	ACar.NewTopSpeed(500)
+// 	fmt.Println("ACar's Kmh:", ACar.Kmh())
+// 	fmt.Println("ACar's mmh:", ACar.Mmh())
+// }
