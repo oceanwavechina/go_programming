@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
+
 func add(x, y float64) float64 {
 	return x + y
 }
@@ -10,8 +16,7 @@ func multiple(a, b string) (string, string) {
 	return a, b
 }
 
-/*
-func main() {
+func testBasic() {
 	fmt.Println("A number from 1-100", rand.Intn(100))
 
 	// var num1, num2 float64 = 5.6, 9.5
@@ -32,4 +37,47 @@ func main() {
 	fmt.Println("address:", addr, ", value:", *addr)
 	fmt.Println("*addr:", *addr, ", *addr**addr:", *addr**addr, ", a:", a)
 }
-*/
+
+func testForLoop() {
+	for i := 0; i < 10; i++ {
+		fmt.Println("i=", i)
+	}
+
+	// := 初始化并赋值
+	ii := -1
+	for ; ii < 1; ii++ {
+		fmt.Println("ii=", ii)
+	}
+
+	// = 只赋值
+	ii = -1
+	for ii < 1 {
+		fmt.Println("idx=", ii)
+		ii++
+	}
+
+	for {
+		fmt.Println("infinite loop")
+		break
+	}
+}
+
+func testReflect() {
+	// Tag最常用的大概就是在marshaling
+	type User struct {
+		Name   string `tag_1:"User Name"`
+		Passwd string `tag_2:"User Password"`
+	}
+
+	user := &User{"liuyanan", "pass"}
+	s := reflect.TypeOf(user).Elem() // 通过反射获取type定义
+	for i := 0; i < s.NumField(); i++ {
+		fmt.Println(s.Field(i).Tag)
+	}
+}
+
+// func main() {
+// 	testBasic()
+// 	testForLoop()
+// 	testReflect()
+// }
