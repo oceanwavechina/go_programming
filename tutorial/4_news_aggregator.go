@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /*
@@ -40,31 +41,55 @@ func (l Location) String() string {
 }
 */
 
-// SitemapIndex Location的数组
-type SitemapIndex struct {
+// SitemapIndexST Location的数组
+type SitemapIndexST struct {
 	Locations []string `xml:"sitemap>loc"`
 }
 
-// News comment
-type News struct {
+// NewsST comment
+type NewsST struct {
 	Titles    []string `xml:"url>news>title"`
 	KeyWords  []string `xml:"url>news>keywords"`
 	Locations []string `xml:"url>loc"`
 }
 
-func main() {
+// NewsMapST fda
+type NewsMapST struct {
+	Keyword  string
+	Location string
+}
 
-	var s SitemapIndex
-	var n News
+func Agg() {
+	var s SitemapIndexST
+	var n NewsST
+	NewsMap := make(map[string]NewsMapST)
 
 	resp, _ := http.Get("https://www.washingtonpost.com/news-sitemaps/index.xml")
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &s)
 
 	for _, Location := range s.Locations {
-		resp, _ := http.Get(Location)
-		bytes, _ := ioutil.ReadAll(resp.Body)
-		xml.Unmarshal(bytes, &n)
-		fmt.Println(n)
+		resp, _ := http.Get(strings.Trim(Location, "\n "))
+		if resp != nil {
+			bytes, _ := ioutil.ReadAll(resp.Body)
+			xml.Unmarshal(bytes, &n)
+			//fmt.Println(n.Locations, n.Titles, Location)
+
+			for idx := range n.Titles {
+				NewsMap[n.Titles[idx]] = NewsMapST{n.KeyWords[idx], n.Locations[idx]}
+			}
+		}
+
+		break
+	}
+
+	for idx, data := range NewsMap {
+		fmt.Println("\n\n\n", idx)
+		fmt.Println("\n", data.Keyword)
+		fmt.Println("\n", data.Location)
 	}
 }
+
+// func main() {
+// 	Agg()
+// }

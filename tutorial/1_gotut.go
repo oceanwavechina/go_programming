@@ -76,8 +76,29 @@ func testReflect() {
 	}
 }
 
+func testMap() {
+	grades := make(map[string]float32)
+
+	grades["timmy"] = 42
+	grades["Jess"] = 92
+	grades["Sam"] = 67
+
+	fmt.Println(grades)
+
+	TimsGrades := grades["timmy"]
+	fmt.Println("timmy's grade:", TimsGrades)
+
+	delete(grades, "timmy")
+	fmt.Println(grades)
+
+	for k, v := range grades {
+		fmt.Println(k, ":", v)
+	}
+}
+
 // func main() {
 // 	testBasic()
 // 	testForLoop()
 // 	testReflect()
+// 	testMap()
 // }

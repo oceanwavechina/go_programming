@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 )
+
+type NewsAggPageSt struct {
+	Title string
+	News  string
+}
 
 // IndexHandler fasda
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,13 +22,16 @@ with emphasize-quot
 	and caution the space`)
 }
 
-// AboutHandler fasda
-func AboutHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "this is about page!")
+// NewsAggHander web page with template
+func NewsAggHander(w http.ResponseWriter, r *http.Request) {
+	p := NewsAggPageSt{Title: "Amazing News Aggragator", News: "some news"}
+	t, _ := template.ParseFiles("basic_templating.html")
+	err := t.Execute(w, p)
+	fmt.Println(err)
 }
 
-// func main() {
-// 	http.HandleFunc("/", IndexHandler)
-// 	http.HandleFunc("/about/", AboutHandler)
-// 	http.ListenAndServe(":8000", nil)
-// }
+func main() {
+	http.HandleFunc("/", IndexHandler)
+	http.HandleFunc("/agg/", NewsAggHander)
+	http.ListenAndServe(":8000", nil)
+}
