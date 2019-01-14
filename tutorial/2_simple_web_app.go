@@ -1,14 +1,36 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
+// SitemapIndexST Location的数组
+type SitemapIndexST struct {
+	Locations []string `xml:"sitemap>loc"`
+}
+
+// NewsST comment
+type NewsST struct {
+	Titles    []string `xml:"url>news>title"`
+	KeyWords  []string `xml:"url>news>keywords"`
+	Locations []string `xml:"url>loc"`
+}
+
+// NewsMapST fda
+type NewsMapST struct {
+	Keyword  string
+	Location string
+}
+
+// NewsAggPageSt comment
 type NewsAggPageSt struct {
 	Title string
-	News  string
+	News  map[string]NewsMapST
 }
 
 // IndexHandler fasda
@@ -24,14 +46,36 @@ with emphasize-quot
 
 // NewsAggHander web page with template
 func NewsAggHander(w http.ResponseWriter, r *http.Request) {
-	p := NewsAggPageSt{Title: "Amazing News Aggragator", News: "some news"}
-	t, _ := template.ParseFiles("basic_templating.html")
+	var s SitemapIndexST
+	var n NewsST
+	NewsMap := make(map[string]NewsMapST)
+
+	resp, _ := http.Get("https://www.washingtonpost.com/news-sitemaps/index.xml")
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &s)
+
+	for _, Location := range s.Locations {
+		resp, _ := http.Get(strings.Trim(Location, "\n "))
+		if resp != nil {
+			bytes, _ := ioutil.ReadAll(resp.Body)
+			xml.Unmarshal(bytes, &n)
+			//fmt.Println(n.Locations, n.Titles, Location)
+
+			for idx := range n.Titles {
+				NewsMap[n.Titles[idx]] = NewsMapST{n.KeyWords[idx], n.Locations[idx]}
+			}
+		}
+		break
+	}
+
+	p := NewsAggPageSt{Title: "Amazing News Aggragator", News: NewsMap}
+	t, _ := template.ParseFiles("newsaggtemplate.html")
 	err := t.Execute(w, p)
 	fmt.Println(err)
 }
 
-func main() {
-	http.HandleFunc("/", IndexHandler)
-	http.HandleFunc("/agg/", NewsAggHander)
-	http.ListenAndServe(":8000", nil)
-}
+// func main() {
+// 	http.HandleFunc("/", IndexHandler)
+// 	http.HandleFunc("/agg/", NewsAggHander)
+// 	http.ListenAndServe(":8000", nil)
+// }

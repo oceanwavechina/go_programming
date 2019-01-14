@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"reflect"
+	"time"
 )
 
 func add(x, y float64) float64 {
@@ -96,9 +97,17 @@ func testMap() {
 	}
 }
 
-// func main() {
-// 	testBasic()
-// 	testForLoop()
-// 	testReflect()
-// 	testMap()
-// }
+func testGoCorutine() {
+	for i := 0; i < 3; i++ {
+		fmt.Println("hello")
+		time.Sleep(time.Microsecond * 1000)
+	}
+}
+
+func main() {
+	testBasic()
+	testForLoop()
+	testReflect()
+	testMap()
+	testGoCorutine()
+}

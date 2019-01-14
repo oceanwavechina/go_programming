@@ -42,27 +42,26 @@ func (l Location) String() string {
 */
 
 // SitemapIndexST Location的数组
-type SitemapIndexST struct {
+type sitemapIndexST struct {
 	Locations []string `xml:"sitemap>loc"`
 }
 
-// NewsST comment
-type NewsST struct {
+type newsST struct {
 	Titles    []string `xml:"url>news>title"`
 	KeyWords  []string `xml:"url>news>keywords"`
 	Locations []string `xml:"url>loc"`
 }
 
 // NewsMapST fda
-type NewsMapST struct {
+type newsMapST struct {
 	Keyword  string
 	Location string
 }
 
-func Agg() {
-	var s SitemapIndexST
-	var n NewsST
-	NewsMap := make(map[string]NewsMapST)
+func agg() {
+	var s sitemapIndexST
+	var n newsST
+	newsMap := make(map[string]newsMapST)
 
 	resp, _ := http.Get("https://www.washingtonpost.com/news-sitemaps/index.xml")
 	bytes, _ := ioutil.ReadAll(resp.Body)
@@ -76,14 +75,13 @@ func Agg() {
 			//fmt.Println(n.Locations, n.Titles, Location)
 
 			for idx := range n.Titles {
-				NewsMap[n.Titles[idx]] = NewsMapST{n.KeyWords[idx], n.Locations[idx]}
+				newsMap[n.Titles[idx]] = newsMapST{n.KeyWords[idx], n.Locations[idx]}
 			}
 		}
-
 		break
 	}
 
-	for idx, data := range NewsMap {
+	for idx, data := range newsMap {
 		fmt.Println("\n\n\n", idx)
 		fmt.Println("\n", data.Keyword)
 		fmt.Println("\n", data.Location)
@@ -91,5 +89,5 @@ func Agg() {
 }
 
 // func main() {
-// 	Agg()
+// 	agg()
 // }
