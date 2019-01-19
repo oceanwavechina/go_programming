@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"reflect"
+	"sync"
 	"time"
 )
 
@@ -97,10 +98,66 @@ func testMap() {
 	}
 }
 
-func testGoCorutine() {
+var wg sync.WaitGroup
+
+func cleanup() {
+	if r := recover(); r != nil {
+		fmt.Println("Recoverd in cleanup! ", r)
+	}
+	// defer wg.Done()
+}
+
+func say(s string) {
+	defer wg.Done()
+	defer cleanup()
 	for i := 0; i < 3; i++ {
-		fmt.Println("hello")
-		time.Sleep(time.Microsecond * 1000)
+		fmt.Println("say", s)
+		time.Sleep(time.Millisecond * 1000)
+		if i == 2 {
+			panic("oh dear, a 2")
+		}
+	}
+	// wg.Done()
+}
+
+func testGoroutine() {
+	// say("Hey")
+	// say("there")
+
+	// go say("Hey")
+	// say("there")
+
+	// 这两个都不能按预期执行，因为gorutine是异步执行的，程序结束后gorutiine还没有执行完
+	// say("Hey")
+	// go say("there")
+
+	// go say("Hey")
+	// go say("there")
+
+	// 这个执行的并不完整，因为主线程的阻塞时间比gorutine的时间还要短
+	// go say("Hey")
+	// go say("there")
+	// time.Sleep(time.Second)
+
+	wg.Add(1)
+	go say("Hey")
+	wg.Add(1)
+	go say("there")
+	wg.Wait() // 阻塞
+
+	wg.Add(1)
+	go say("Hi")
+	wg.Wait()
+}
+
+func foo() {
+	// defer 类似一个stack的方式执行的
+	defer fmt.Println("Done !")
+	defer fmt.Println("Done again!")
+	fmt.Println("Doing Some Stufff!")
+
+	for i := 0; i < 5; i++ {
+		defer fmt.Println("reverse output:", i)
 	}
 }
 
@@ -109,5 +166,7 @@ func main() {
 	testForLoop()
 	testReflect()
 	testMap()
-	testGoCorutine()
+	testGoroutine()
+
+	foo()
 }
