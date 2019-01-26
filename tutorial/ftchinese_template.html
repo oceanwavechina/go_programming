@@ -9,13 +9,15 @@
 <table id="fancytable" class="display">
     <thead>
         <th>Title</th>
-        <th>Keywords</th>
+        <th>PubDate</th>
+        <th>Description</th>
     </thead>
     <tbody>
-        {{ range $key, $value := .News }}
+        {{ range $idx, $value := .News }}
         <tr>
-            <td><a href="{{$value.Location}}" target="_blank">{{ $key }}</a></td>
-            <td>{{ $value.Keyword }}</td>
+            <td><a href="{{$value.Link}}" target="_blank">{{ $value.Title }}</a></td>
+            <td>{{ $value.PubDate }}</td>
+            <td>{{ $value.Description }}</td>
         </tr>
         {{ end }}
     </tbody>

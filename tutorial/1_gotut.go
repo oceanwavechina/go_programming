@@ -161,12 +161,51 @@ func foo() {
 	}
 }
 
-func main() {
-	testBasic()
-	testForLoop()
-	testReflect()
-	testMap()
-	testGoroutine()
+var wg2 sync.WaitGroup
 
-	foo()
+func fooChan(c chan int, someValue int) {
+	defer wg2.Done()
+	c <- someValue * 5
+	// 把值输出到channel中了，所以就不用return了
+
 }
+
+func testChannel() {
+	fooVal := make(chan int)
+	// fooVal := make(chan int, 10)
+	/*
+		go fooChan(fooVal, 5)
+		go fooChan(fooVal, 3)
+
+		v1 := <-fooVal
+		v2 := <-fooVal
+
+		// channel 会阻塞到gorutine返回结果
+		v1, v2 := <-fooVal, <-fooVal
+		fmt.Println("channel Values:", v1, v2)
+	*/
+
+	for i := 0; i < 10; i++ {
+		wg2.Add(1)
+		go fooChan(fooVal, i)
+	}
+
+	wg2.Wait()
+	close(fooVal)
+
+	for item := range fooVal {
+		fmt.Println(item)
+	}
+}
+
+// func main() {
+// 	/*
+// 		testBasic()
+// 		testForLoop()
+// 		testReflect()
+// 		testMap()
+// 		testGoroutine()
+// 		foo()
+// 	*/
+// 	testChannel()
+// }
