@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+option go_package="../proto;proto";
+
+service ToUpper {
+	rpc Upper(UpperRequest) returns (UpperReply) {}
+}
+
+message UpperRequest {
+	string name = 1;
+}
+
+message UpperReply {
+	string message = 1;
+}
