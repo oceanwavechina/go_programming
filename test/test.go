@@ -60,7 +60,7 @@ func AesEncrypt(origData, key, iv []byte) ([]byte, error) {
 	blockMode.CryptBlocks(crypted, origData)
 	fmt.Println("origData:", string(origData))
 	fmt.Println("origData length:", len(origData))
-	fmt.Println("crypted:", string(crypted))
+    //fmt.Println("crypted:", string(crypted))
 	fmt.Println("crypted length:", len(crypted))
 	return crypted, nil
 }
